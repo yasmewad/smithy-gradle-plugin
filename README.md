@@ -13,6 +13,9 @@ and generate JARs that contain filtered projections of Smithy models.
   with the [`trait-codegen`](https://github.com/smithy-lang/smithy/tree/main/smithy-trait-codegen) smithy build plugin to generate Java representations 
   of traits from Smithy IDL trait definitions. 
   The `smithy-trait-package` plugin applies both the `java-library` and `smithy-jar` plugins.
+- [`smithy-java-codegen`](#smithy-java-codegen-plugin): Configures a Java project for Smithy Java code generation. This plugin wires the 
+  [`java-codegen`](https://github.com/smithy-lang/smithy-java) Smithy build plugin output into the Java source set for server and client 
+  code generation. The `smithy-java-codegen` plugin applies both the `java-library` and `smithy-base` plugins.
 
 ## Examples
 Standalone examples are available for each of the provided plugins and can be found in the [examples](./examples) 
@@ -123,6 +126,48 @@ trait to Maven or another package repository you will need to add and configure 
 the [jreleaser](https://jreleaser.org/) Gradle plugin to publish your package.
 
 See the [examples](./examples/trait-package-plugin) directory for examples of using this plugin.
+
+### Smithy Java Codegen Plugin
+The `smithy-java-codegen` plugin configures a Java project for [Smithy Java](https://github.com/smithy-lang/smithy-java) 
+code generation. The `java-library` and `smithy-base` plugins are automatically applied and any server or client code 
+generated with the `java-codegen` build plugin will be added to the relevant sourceSets.
+
+This plugin should be used to:
+- Generate server stubs from a Smithy model using Smithy Java.
+- Generate client stubs from a Smithy model using Smithy Java.
+
+#### Usage
+The `smithy-java-codegen` plugin can be applied to configure a Java codegen project.
+
+```kotlin 
+// build.gradle.kts
+plugins {
+    id("software.amazon.smithy.gradle.smithy-java-codegen").version("1.4.0")
+}
+
+dependencies {
+    smithyBuild("software.amazon.smithy.java:plugins:1.x")
+}
+```
+
+*Note*: Codegen settings (service, namespace, modes) are configured in `smithy-build.json`, not in the Gradle DSL.
+The plugin requires the `java-codegen` Smithy build plugin to be configured in `smithy-build.json`:
+
+```json
+{
+    "version": "1.0",
+    "sources": ["model"],
+    "plugins": {
+        "java-codegen": {
+            "service": "com.example#MyService",
+            "namespace": "com.example",
+            "modes": ["server"]
+        }
+    }
+}
+```
+
+See the [examples](./examples/java-codegen-plugin) directory for examples of using this plugin.
 
 ## Configuration
 ### Customizing source directories  

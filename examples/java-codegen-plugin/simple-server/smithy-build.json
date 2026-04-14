@@ -1,0 +1,11 @@
+{
+    "version": "1.0",
+    "sources": ["model"],
+    "plugins": {
+        "java-codegen": {
+            "service": "com.example#EchoService",
+            "namespace": "com.example",
+            "modes": ["server"]
+        }
+    }
+}
